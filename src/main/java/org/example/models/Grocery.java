@@ -1,53 +1,51 @@
 package org.example.models;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Grocery{
-    public static ArrayList<Object> groceryList = new ArrayList<>();
+    public static ArrayList<String> groceryList = new ArrayList<>();
 
     public static void printSorted(){
-        System.out.println("Güncel alışveriş listesi: ");
+        Collections.sort(groceryList);
+        if(groceryList.isEmpty()){System.out.println("Listede ürün bulunmuyor.");} else {System.out.println("Güncel alışveriş listesi: ");
         for (int i = 0; i < groceryList.size(); i++){
             System.out.println(groceryList.get(i));
-        }
+        }}
 
     }
 
-    public static int checkItemIsInList(String item){
-
-
-       for (int i = 0; i < groceryList.size(); i++){
-           if(item.toLowerCase(Locale.ROOT).trim().equals(groceryList.get(i).toString().toLowerCase(Locale.ROOT).trim())){
-
-              return i;
-           }
-
-        };
-        return -1;
-
+    private static boolean checkItemIsInList(String item){
+    return groceryList.contains(item);
     };
 
-    public static void addItems(String item){
-        if(checkItemIsInList(item) != -1){System.out.println("Eklemek istediğiniz ürün listede bulunuyor.");} else {
-            groceryList.add(item);
-            System.out.println( item + " listeye eklendi.");
+
+    public static void addItems(String eklenecekUrunler){
+        String [] eklenecekUrun = eklenecekUrunler.split(",");
+        for (String urun: eklenecekUrun){
+            if (checkItemIsInList(urun)){
+                System.out.println("Eklemek istediğiniz ürün listede mevcut: " + urun);
+            } else {groceryList.add(urun);
+            System.out.println(urun +" listeye eklendi.");}
         }
+        printSorted();
     };
 
-    public static void removeItems(String item){
-        if(checkItemIsInList(item)!= -1){groceryList.remove(item);
-        System.out.println(item + " listeden çıkarıldı.");} else {
-            System.out.println("Çıkartmak istediğiniz ürün listede yok.");
+    public static void removeItems(String cıkarılacakUrunler){
+        String [] cıkacakUrun = cıkarılacakUrunler.split(",");
+        for (String urun: cıkacakUrun){
+            if(checkItemIsInList(urun)){groceryList.remove(urun);
+                System.out.println(urun + " listeden çıkarıldı.");} else {
+                System.out.println("Çıkartmak istediğiniz ürün listede yok.");
+            }
         }
+        printSorted();
     }
 
     public static void startGrocery(){
     Scanner sc = new Scanner(System.in);
     boolean devam = true;
+        System.out.println("Alışveriş listesine hoşgeldiniz.");
         while (devam){
-            System.out.println("Alışveriş listesine hoşgeldiniz.");
             System.out.println("Ne yapmak istersiniz ?");
             System.out.println("0--Uygulamayı durdur.");
             System.out.println("1--Listeye ürün ekleyin.");
@@ -62,30 +60,22 @@ public class Grocery{
                     break;
                 case 1:
                     System.out.println("Lütfen eklemek istediğiniz ürün veya ürünleri aralarında virgül olacak şekilde yazınız.");
-                    String inputEkle = sc.nextLine();
-                    String[] eklenecekUrunler = inputEkle.split(",");
 
-                    for (int i = 0; i < eklenecekUrunler.length; i++) {
+                    String eklenecekUrunler = sc.nextLine();
+                    addItems(eklenecekUrunler);
 
-                        addItems(eklenecekUrunler[i]);
-
-                    }
-                    printSorted();
                     break;
                 case 2:
                     printSorted();
-                    System.out.println("Lütfen çıkartmak istediğiniz ürün veya ürünleri aralarında virgül olacak şekilde yazınız.");
-                    String inputCikar = sc.nextLine();
-                    String[] cikacakUrunler = inputCikar.split(",");
+                    System.out.println("Lütfen eklemek istediğiniz ürün veya ürünleri aralarında virgül olacak şekilde yazınız.");
 
-                    for (int i = 0; i < cikacakUrunler.length; i++) {
-
-                        removeItems(cikacakUrunler[i]);
-
-                    }
-                    printSorted();
+                    String cıkarılacakUrunler = sc.nextLine();
+                    removeItems(cıkarılacakUrunler);
 
                     break;
+
+
+
                 default:
                     System.out.println("Lütfen geçerli bir seçim yapınız");
             }
